@@ -6,7 +6,7 @@ int builtins(t_list *list, t_list *envi)
 	t_parser *d = (t_parser *)list->content;
 	
 
-	if(!ft_strncmp(d->cmd[0],"echo",4)) 
+	if(!ft_strncmp(d->cmd[0],"echo",5)) 
 		echo(d->cmd);
 	// else if(!ft_strncmp(d->cmd[0],"cd",3)) 
 	// 	cd(envi);
@@ -82,29 +82,43 @@ void	pwd(void)
 		printf("%s\n", s);
 }
 
+int	remove_line(char *s)
+{
+	int	i;
+
+	i = 0;
+	if (s[i] == '-')
+		i++;
+	else
+		return (0);
+	while (s[i])
+	{
+		if (s[i] == 'n')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 void	echo(char **s)
 {
 	int	i;
 	int	remove_new_line;
-	int	p;
 
 	i = 1;
 	remove_new_line = 0;
-	p = 1;
 	while (s[i])
 	{
-		if (p == 1 && s[1][1] == '-' && s[1][2] != '\0')
+		if (remove_line(s[1]))
 		{
 			remove_new_line = 1;
 			i++;
 		}
-		p = 0;
 		printf("%s", s[i]);
 		if (s[i + 1] != NULL)
 			printf(" ");
 		i++;
 	}
-	printf(">> %d\n", remove_new_line);
 	if (!remove_new_line)
 		printf("\n");
 }

@@ -15,8 +15,8 @@
 t_parser	*init_content(t_parser *content)
 {
 	content = (t_parser *)malloc(sizeof(t_parser));
-	//content->in_fd = NULL;
-	//content->out_fd = NULL;
+	content->in_file = 0;
+	content->out_file = 1;
 	content->cmd = (char **)malloc(sizeof(char *) * 2);
 	content->cmd[0] = NULL;
 	content->cmd[1] = NULL;
@@ -88,21 +88,21 @@ t_list	*fill_command(t_list *tokens)
 			tokens = tokens->next;
 			curr = (t_token *) tokens->content;
 			if (curr->type == TOKEN_STRING)
-				tmp->out_fd = ft_strdup(curr->value);
+				tmp->out_file = open(curr->value, O_CREAT | O_RDWR | O_APPEND, 0664);
 		}
 		else if (curr->type == TOKEN_REDIRECT)
 		{
 			tokens = tokens->next;
 			curr = (t_token *) tokens->content;
 			if (curr->type == TOKEN_STRING)
-				tmp->out_fd = ft_strdup(curr->value);
+				tmp->out_file = open(curr->value, O_TRUNC | O_CREAT | O_RDWR, 0664);
 		}
 		else if (curr->type == TOKEN_LREDIRECT)
 		{
 			tokens = tokens->next;
 			curr = (t_token *) tokens->content;
 			if (curr->type == TOKEN_STRING)
-				tmp->in_fd = ft_strdup(curr->value);
+				tmp->in_file = open(curr->value, O_CREAT | O_RDWR, 0664);
 		}
 		else if (curr->type == TOKEN_PIPE)
 		{
@@ -116,15 +116,46 @@ t_list	*fill_command(t_list *tokens)
 	return (cmd_list);
 }
 
+char *get_var_name(char *str)
+{
+	int i = 1; // dollar $ 
+	char *name;
+
+	name = NULL;
+	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_') )
+	{
+		name = append_to_str(name, str[i]);
+		i++;
+	}
+	if (!name)
+		name = append_to_str(name, '\0');
+	return (name);
+}
+
+char *expand(char *result, char *var_name)
+{
+	char *value;
+	char *tmp;
+
+	value  = getenv(var_name);
+	tmp = result;
+	result = ft_strjoin(result, value);
+	if (result == NULL)
+		result = append_to_str(result, '\0');
+	free(tmp);
+	// printf("var_name :[%s] \n", var_name);
+	// printf("value :[%s] \n", value);
+	// printf("result  :[%s] \n", result);
+	return (result);
+}
+
 char	*string_parser(char *str)
 {
 	int		i;
-	char	*string;
-	char 	*var;
-
+	char *string;
 	i = 0;
 	string = NULL;
-	var = NULL;
+	char *var_name;
 
 	// "" error
 	while (str[i])
@@ -134,7 +165,15 @@ char	*string_parser(char *str)
 			i++;
 			while (str[i] && str[i] != '\"')
 			{
-				string = append_to_str(string, str[i]);
+				if (str[i] == '$')
+				{
+					var_name = get_var_name(str+i);
+					string = expand(string, var_name);
+					i += ft_strlen(var_name);
+					free(var_name);
+				}
+				else
+					string = append_to_str(string, str[i]);
 				i++;
 			}
 			if (str[i] == '\0')
@@ -142,10 +181,12 @@ char	*string_parser(char *str)
 			i++;
 		}
 		else if (str[i] == '\'')
-		{	
+		{
+		
 			i++;
 			while (str[i] && str[i] != '\'')
 			{
+				
 				string = append_to_str(string, str[i]);
 				i++;
 			}
@@ -155,10 +196,19 @@ char	*string_parser(char *str)
 		}
 		else
 		{
-			string = append_to_str(string, str[i]);
+			if (str[i] == '$')
+			{
+				var_name = get_var_name(str+i);
+				string = expand(string, var_name);
+				i += ft_strlen(var_name);
+				free(var_name);
+			}
+			else
+				string = append_to_str(string, str[i]);
 			i++;
 		}
 	}
+
 	return (string);
 }
 
