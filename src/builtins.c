@@ -18,8 +18,8 @@ int builtins(t_list *list, t_list *envi)
 		unset(d->cmd[1] ,envi);
 	else if(!ft_strncmp(d->cmd[0],"env",4))
 		env(envi);
-	// else if(!ft_strncmp(d->cmd[0],"exit",5)) 
-	// 	exit(d->cmd);
+	else if(!ft_strncmp(d->cmd[0],"exit", 5))
+		f_exit(d->cmd);
 	else 
 		return 1;
 	return 0;
@@ -121,4 +121,36 @@ void	echo(char **s)
 	}
 	if (!remove_new_line)
 		printf("\n");
+}
+
+int	size_par(char **s)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (s[i])
+	{
+		while (s[i][j])
+			j++;
+		i++;
+	}
+	return (i);
+}
+
+void	one_par(char *s)
+{
+	if (!not_number(s))
+		
+}
+
+void	f_exit(char **s)
+{
+	int	size;
+
+	size = size_par(s);
+	//printf(">> %d\n", size);
+	if (size == 2)
+		one_par(s[1]);
 }

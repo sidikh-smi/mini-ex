@@ -95,6 +95,7 @@ void	env(t_list* senv);
 void  export(char *var , t_list *env);
 void	pwd(void);
 void	echo(char **s);
+void	f_exit(char **s);
 
       //execut//
 int start(t_list *list, t_list *envi);
