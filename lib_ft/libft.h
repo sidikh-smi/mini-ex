@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wlahyani <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: skhaliff <skhaliff@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 18:14:24 by wlahyani          #+#    #+#             */
-/*   Updated: 2023/01/26 22:08:00 by wlahyani         ###   ########.fr       */
+/*   Updated: 2023/02/23 00:46:23 by skhaliff         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stdlib.h>
 # include <unistd.h>
+
 typedef struct s_list
 {
 	void			*content;
@@ -43,10 +44,11 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 void	*ft_memchr(const void *s, int c, size_t n);
 int		ft_memcmp(const void *str1, const void *str2, size_t n);
 char	*ft_strnstr(const char *haysck, const char *needle, size_t n);
-int		ft_atoi(const char *str);
+int		ft_atoi(const char *str, long long *b);
 void	*ft_calloc(size_t count, size_t size);
 char	*ft_strdup(const char *s1);
-int	ft_lstsize(t_list *lst);
+int		ft_lstsize(t_list *lst);
+int		ft_strcmp(char *s1, char *s2);
 
 //part2
 
@@ -68,4 +70,6 @@ t_list	*ft_lstlast(t_list *lst);
 t_list	*ft_lstnew(void *content);
 void	ft_lstadd_front(t_list **lst, t_list *new);
 void	ft_lstadd_back(t_list **lst, t_list *new);
+
+void	*s_malloc(int size);
 #endif
