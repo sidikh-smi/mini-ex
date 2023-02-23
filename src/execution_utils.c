@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wlahyani <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: wlahyani <wlahyani@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 21:19:56 by wlahyani          #+#    #+#             */
-/*   Updated: 2023/02/21 22:03:10 by wlahyani         ###   ########.fr       */
+/*   Updated: 2023/02/23 20:14:10 by wlahyani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../include/minishell.h"
 
 t_list	*get_env(char **env)
@@ -85,7 +86,7 @@ char	*add_path(char *cmd)
 
 	i = 0;
 	path = ft_split(get_new_env("PATH"), ':');
-	while (path[i])
+	while (cmd && path[i])
 	{
 		command = ft_strjoin(path[i], "/");
 		command = ft_strjoin(command, cmd);

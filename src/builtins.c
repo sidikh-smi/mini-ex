@@ -6,7 +6,7 @@
 /*   By: skhaliff <skhaliff@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 23:41:17 by wlahyani          #+#    #+#             */
-/*   Updated: 2023/02/22 23:58:47 by skhaliff         ###   ########.fr       */
+/*   Updated: 2023/02/23 21:52:40 by skhaliff         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,13 @@ void	builtins(t_list *list)
 	else if (!ft_strcmp(d->cmd[0], "cd"))
 		ft_cd(d->cmd);
 	else if (!ft_strcmp(d->cmd[0], "pwd"))
-		ft_pwd();
+		ft_pwd(d->out_file);
 	else if (!ft_strcmp(d->cmd[0], "export"))
-		ft_export(d->cmd);
+		ft_export(d->cmd, d->out_file);
 	else if (!ft_strcmp(d->cmd[0], "unset"))
 		ft_unset(d->cmd);
 	else if (!ft_strcmp(d->cmd[0], "env"))
-		ft_env();
+		ft_env(d->out_file);
 	else if (!ft_strcmp(d->cmd[0], "exit"))
 		ft_exit(d->cmd);
 	return ;
@@ -78,7 +78,7 @@ int	size_par(char **s)
 	return (i);
 }
 
-void	ft_env(void)
+void	ft_env(int fd)
 {
 	t_list	*curr;
 	t_env	*curr_value;
@@ -87,15 +87,22 @@ void	ft_env(void)
 	while (curr)
 	{
 		curr_value = (t_env *)(curr->content);
-		printf("%s=%s\n", curr_value->key, curr_value->value);
+		//printf("%s=%s\n", curr_value->key, curr_value->value);
+		ft_putstr_fd(curr_value->key, fd);
+		ft_putstr_fd("=", fd);
+		ft_putstr_fd(curr_value->value, fd);
+		ft_putstr_fd("\n", fd);
 		curr = curr->next;
 	}
 }
 
-void	ft_pwd(void)
+void	ft_pwd(int fd)
 {
 	char	s[PATH_MAX];
 
 	if (getcwd(s, sizeof(s)) != NULL)
-		printf("%s\n", s);
+	{
+		ft_putstr_fd(s, fd);
+		ft_putstr_fd("\n", fd);
+	}
 }

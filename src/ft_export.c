@@ -6,23 +6,28 @@
 /*   By: skhaliff <skhaliff@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 23:47:49 by skhaliff          #+#    #+#             */
-/*   Updated: 2023/02/23 16:56:45 by skhaliff         ###   ########.fr       */
+/*   Updated: 2023/02/23 21:47:51 by skhaliff         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	print_export(t_list *export)
+void	print_export(t_list *export, int fd)
 {
 	t_env	*temp_var;
 
 	while (export)
 	{
 		temp_var = (t_env *)(export->content);
-		printf("declare -x %s", temp_var->key);
+		ft_putstr_fd("declare -x ", fd);
+		ft_putstr_fd(temp_var->key, fd);
 		if (temp_var->value)
-			printf("=\"%s\"", temp_var->value);
-		printf("\n");
+		{
+			ft_putstr_fd("=\"", fd);
+			ft_putstr_fd(temp_var->value, fd);
+			ft_putstr_fd("\"", fd);
+		}
+		ft_putstr_fd("\n", fd);
 		export = export->next;
 	}
 }
@@ -82,7 +87,7 @@ int	check_key(char *key)
 	return (0);
 }
 
-void	ft_export(char **var)
+void	ft_export(char **var, int fd)
 {
 	int		i;
 	int		j;
@@ -96,7 +101,7 @@ void	ft_export(char **var)
 	j = 0;
 	s = 0;
 	if (i == 1)
-		print_export(export);
+		print_export(export, fd);
 	else
 	{
 		while (++j < i)

@@ -36,6 +36,7 @@ typedef struct s_parser
 	char	**cmd;
 	int		in_file;
 	int		out_file;
+	char	**env;
 }	t_parser;
 
 typedef struct s_token
@@ -78,9 +79,15 @@ int		istoken(char c);
 t_list	*fill_command(t_list *tokens);
 int		check_syntax(t_list *tokens);
 void	init_parser(t_parser *cmd);
+t_parser	*init_content(t_parser *content);
 int		quotes_checker(char *str);
 char	*remove_quotes(char *str , int *heredoc_flag, int prev_type);
 t_list	*parsing_quotes(t_list *tokens, int *flag);
+int	lredirection_handler(t_list *tokens, t_parser *tmp);
+int	heredoc_and_append_handler(t_list **tokens, t_parser **tmp, int flag);
+void	add_cmd_to_list(t_token *curr, t_list **cmd_list, t_parser **tmp);
+t_token	*go_next(t_list **tokens);
+
 
         //parser_utils.c//
 void	deallocate(t_list *list);
@@ -99,13 +106,15 @@ size_t	get_env_size(char **env);
 char	*add_path(char *cmd);
 char	**env_to_tab(t_list *list);
 void	*s_malloc(int size);
+int		check_cmd(char *str);
+void	dup_std_io(t_list *cmds, t_parser *tmp, int *pipe1, int *buffer);
 
       //builtins//
 void	builtins(t_list *list);
 void	ft_unset(char **var);
-void	ft_env(void);
-void	ft_export(char **var);
-void	ft_pwd(void);
+void	ft_env(int fd);
+void	ft_export(char **var, int fd);
+void	ft_pwd(int fd);
 void	ft_echo(char **s, int fd);
 void	ft_exit(char **s);
 void	ft_cd(char **s);
@@ -114,8 +123,8 @@ char	*get_new_env(char *s);
 int		check_builtin(t_list *list);
 
       //execut//
-int		start(t_list *list);
-void	execute(t_list *cmds , char **env);
+void		start(t_list *list);
+void	execute(t_list *cmds);
 
       // signlas // 
 void	handler(int sig);
